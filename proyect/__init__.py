@@ -6,21 +6,19 @@ from .balancesBD import Balance, Contenedor, EntradaDetalle, BalanceMovimiento, 
 
 def iniciarApp():
     if conection.is_closed():
-        try:
-            conection.connect()
-            print('Conexion Exitosa')
+        
+        conection.connect()
+        print('Conexion Exitosa')
             
-            conection.create_tables([
-                Empresa,
-                Contenedor,
-                Balance,
-                EntradaDetalle,
-                SalidaDetalle,
-                ContenedorMovimiento,
-                BalanceMovimiento,
-                ContenedorBalance,
-            ])
-        except ex:
-            print(ex)
+        conection.create_tables([
+            Empresa,
+            Contenedor,
+            Balance,
+            EntradaDetalle,
+            SalidaDetalle,
+            ContenedorMovimiento,
+            BalanceMovimiento,
+            ContenedorBalance,
+        ])
 
 iniciarApp()
