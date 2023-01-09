@@ -1,5 +1,6 @@
 from email.errors import InvalidMultipartContentTransferEncodingDefect
 from turtle import bgcolor
+from .excelServices import ExcelService
 from datetime import datetime, timedelta
 from .balancesBD import cnx as conection
 from .balancesBD import Balance, Contenedor, EntradaDetalle, BalanceMovimiento, ContenedorMovimiento, ContenedorBalance, SalidaDetalle, Empresa
@@ -11,6 +12,7 @@ def iniciarApp():
         conection.connect()
         print('Conexion Exitosa')
         fetchLlenaderasDocumentacion()
+        fetchDataDucto()
             
         #conection.create_tables([
         #    Empresa,
@@ -53,5 +55,12 @@ def fetchLlenaderasDocumentacion():
         DocumentacionService.fetchLlenaderas(fechaJornada)
     else:
         print('No conectado')
+
+def fetchDataDucto():
+    if(ExcelService.ductoServiceDB()):
+      balance_id= '2'
+      ExcelService.lecturaValoresDiarios(balance_id)  
+    else:
+        print('No hay conexión')
 
 iniciarApp()
