@@ -37,10 +37,8 @@ class DocumentacionService():
 
     @classmethod
     def fetchLlenaderas(self, fechaBalance):
-        #print(fechaBalance)
         cursor = self.conexion.cursor()
         querie = "SELECT e.id, e.noEmbarque, e.fecha, e.compania, e.grupo,e.subgrupo, emb.llenadera_llenado as llenadera,  e.valorCarga, e.pg, e.masa, e.masa / 1000 as masaTon, e.fechaSalida, e.fechaJornada, emb.inicioCarga_llenado as inicioCarga, emb.finCarga_llenado as finCarga FROM entrada e INNER JOIN embarques emb ON e.noEmbarque = emb.embarque WHERE e.fechaJornada = '%s'" % fechaBalance
-        #print(querie)
         cursor.execute(querie)
         # obtener el balance balance
         balance = Balance.select().where(Balance.fecha == fechaBalance).first()
@@ -50,7 +48,6 @@ class DocumentacionService():
 
         for fila in embarques:
             try:
-                
                 salidaDetalle = SalidaDetalle.create(
                     balance_id = balance.id_balance,
                     fecha_hora_inicio = fila[13],

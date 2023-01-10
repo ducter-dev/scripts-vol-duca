@@ -1,16 +1,19 @@
 from email.errors import InvalidMultipartContentTransferEncodingDefect
 from turtle import bgcolor
-from .excelServices import ExcelService
+from .datosServices import DatosService
 from datetime import datetime, timedelta
 from .balancesBD import cnx as conection
 from .balancesBD import Balance, Contenedor, EntradaDetalle, BalanceMovimiento, ContenedorMovimiento, ContenedorBalance, SalidaDetalle, Empresa
 from .documentacionBD import DocumentacionService
 
+now = datetime.now()
+fecha_base = datetime(now.year, now.month, now.day, 5, 0, 0)
+fechaJornada = (fecha_base - timedelta(days=1)).strftime("%Y-%m-%d")
+
 def iniciarApp():
     if conection.is_closed():
-        
         conection.connect()
-        print('Conexion Exitosa')
+        print('Conexión Exitosa')
         fetchLlenaderasDocumentacion()
         fetchDataDucto()
             
@@ -26,14 +29,10 @@ def iniciarApp():
         #])
 
 def crearBalance():
-    # obtener la fecha 
-    now = datetime.now()
-    #fechaBalance = (now - timedelta(days=1)).strftime("%Y-%m-%d")
-    fechaBalance = '2022-02-28'
-    # obtener el balance balance
+    fechaBalance = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+    # obtener el balance 
     balance = Balance.select().where(Balance.fecha == fechaBalance).first()
     if balance is None:
-        #print('No se encontro el balance')
         balance = Balance.create(
             fecha = fechaBalance,
             entradas = 0,
@@ -48,18 +47,13 @@ def crearBalance():
 
 def fetchLlenaderasDocumentacion():
     if (DocumentacionService.conectarBD()):
-        now = datetime.now()
-        fecha_base = datetime(now.year, now.month, now.day, 5, 0, 0)
-        #fechaJornada = (fecha_base - timedelta(days=1)).strftime("%Y-%m-%d")
-        fechaJornada = '2022-02-28'
         DocumentacionService.fetchLlenaderas(fechaJornada)
     else:
         print('No conectado')
 
 def fetchDataDucto():
-    if(ExcelService.ductoServiceDB()):
-      balance_id= '2'
-      ExcelService.lecturaValoresDiarios(balance_id)  
+    if(DatosService.ductoServiceDB()):
+        DatosService.lecturaValoresDiarios(fechaJornada)  
     else:
         print('No hay conexión')
 
